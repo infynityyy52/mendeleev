@@ -221,7 +221,56 @@ function checkComplete() {
     }
 }
 
+// Добавь в конец файла script.js
+let draggedElement = null;
+
+// Touch события для мобильных
+document.addEventListener('touchstart', (e) => {
+    const piece = e.target.closest('.element-piece');
+    if (piece && piece.draggable) {
+        draggedElement = piece;
+        piece.style.opacity = '0.7';
+        piece.style.transform = 'scale(1.1)';
+    }
+});
+
+document.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    if (draggedElement) {
+        const touch = e.touches[0];
+        draggedElement.style.position = 'fixed';
+        draggedElement.style.left = touch.clientX - 10 + 'px';
+        draggedElement.style.top = touch.clientY - 10 + 'px';
+        draggedElement.style.zIndex = '1000';
+    }
+});
+
+document.addEventListener('touchend', (e) => {
+    if (draggedElement) {
+        const touch = e.changedTouches[0];
+        const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+        const slot = elementBelow?.closest('.element-slot');
+        
+        if (slot && slot.dataset.symbol === draggedElement.dataset.symbol) {
+            slot.appendChild(draggedElement);
+            draggedElement.draggable = false;
+            draggedElement.style.cursor = 'default';
+            checkComplete();
+        }
+        
+        // Сброс стилей
+        draggedElement.style.opacity = '';
+        draggedElement.style.transform = '';
+        draggedElement.style.position = '';
+        draggedElement.style.left = '';
+        draggedElement.style.top = '';
+        draggedElement.style.zIndex = '';
+        draggedElement = null;
+    }
+});
+
 // Добавь вызов updateProgress в начало
 document.addEventListener('DOMContentLoaded', () => {
     updateProgress();
+
 });
