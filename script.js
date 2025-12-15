@@ -120,7 +120,6 @@ const elements = [
     { symbol: 'Og', name: 'Оганесон', number: 118, row: 7, col: 18 }
 ];
 
-// Остальной код остается тот же
 function createPuzzle() {
     const puzzleContainer = document.getElementById('puzzle');
     const piecesContainer = document.getElementById('pieces');
@@ -129,7 +128,7 @@ function createPuzzle() {
         const slot = document.createElement('div');
         slot.className = 'element-slot';
         slot.dataset.symbol = element.symbol;
-        slot.dataset.number = element.number; // Добавляем номер для отображения
+        slot.dataset.number = element.number;
         slot.style.gridRow = element.row;
         slot.style.gridColumn = element.col;
         puzzleContainer.appendChild(slot);
@@ -163,6 +162,18 @@ function updateProgress() {
     document.getElementById('progress').textContent = `${completed} / 118`;
 }
 
+function checkComplete() {
+    const completedElements = document.querySelectorAll('.element-slot .element-piece');
+    updateProgress();
+    
+    if (completedElements.length === elements.length) {
+        setTimeout(() => {
+            alert('🎉 Поздравляю! Таблица Менделеева собрана полностью!');
+        }, 100);
+    }
+}
+
+// Desktop drag & drop
 document.addEventListener('dragstart', (e) => {
     if (e.target.classList.contains('element-piece')) {
         e.dataTransfer.setData('text/plain', e.target.dataset.symbol);
@@ -187,44 +198,9 @@ document.addEventListener('drop', (e) => {
     }
 });
 
-function checkComplete() {
-    const completedElements = document.querySelectorAll('.element-slot .element-piece');
-    updateProgress();
-    
-    if (completedElements.length === elements.length) {
-        setTimeout(() => {
-            alert('🎉 Поздравляю! Таблица Менделеева собрана полностью!');
-        }, 100);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    updateProgress();
-});
-
-createPuzzle();
-
-function updateProgress() {
-    const completed = document.querySelectorAll('.element-slot .element-piece').length;
-    document.getElementById('progress').textContent = `${completed} / 118`;
-}
-
-// Обнови функцию checkComplete
-function checkComplete() {
-    const completedElements = document.querySelectorAll('.element-slot .element-piece');
-    updateProgress();
-    
-    if (completedElements.length === elements.length) {
-        setTimeout(() => {
-            alert('🎉 Поздравляю! Таблица Менделеева собрана полностью!');
-        }, 100);
-    }
-}
-
-// Добавь в конец файла script.js
+// Mobile touch events
 let draggedElement = null;
 
-// Touch события для мобильных
 document.addEventListener('touchstart', (e) => {
     const piece = e.target.closest('.element-piece');
     if (piece && piece.draggable) {
@@ -269,8 +245,8 @@ document.addEventListener('touchend', (e) => {
     }
 });
 
-// Добавь вызов updateProgress в начало
+// Инициализация
 document.addEventListener('DOMContentLoaded', () => {
+    createPuzzle();
     updateProgress();
-
 });
